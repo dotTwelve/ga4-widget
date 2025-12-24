@@ -11,26 +11,25 @@ const analyticsDataClient = new BetaAnalyticsDataClient({ credentials });
 
 module.exports = async (req, res) => {
   try {
-    // Realtime - aktivní uživatelé teď
+    // Realtime - posledních 15 minut
     const [realtime] = await analyticsDataClient.runRealtimeReport({
       property: `properties/${propertyId}`,
       metrics: [{ name: "activeUsers" }],
     });
 
-    // Posledních 15 minut
-    const [report] = await analyticsDataClient.runReport({
+    // Celkem za dnešek
+    const [daily] = await analyticsDataClient.runReport({
       property: `properties/${propertyId}`,
-      metrics: [{ name: "activeUsers" }],
+      metrics: [{ name: "totalUsers" }],
       dateRanges: [{ startDate: "today", endDate: "today" }],
-      minuteRanges: [{ startMinutesAgo: 15, endMinutesAgo: 0 }],
     });
 
-    const activeNow = realtime.rows?.[0]?.metricValues?.[0]?.value || "0";
-    const last15min = report.rows?.[0]?.metricValues?.[0]?.value || "0";
+    const last15min = realtime.rows?.[0]?.metricValues?.[0]?.value || "0";
+    const today = daily.rows?.[0]?.metricValues?.[0]?.value || "0";
 
     res.status(200).json({
-      activeUsers: parseInt(activeNow),
       last15min: parseInt(last15min),
+      today: parseInt(today),
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
