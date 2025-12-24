@@ -50,6 +50,17 @@
       margin-top: 8px;
     }
     
+    .today {
+      font-size: 24px;
+      color: #666;
+      margin-top: 30px;
+    }
+    
+    .today span {
+      color: #4CAF50;
+      font-weight: 600;
+    }
+    
     .status {
       position: fixed;
       bottom: 40px;
@@ -78,6 +89,7 @@
     <div class="site">NOAH.fit</div>
     <div class="count" id="count">-</div>
     <div class="label">online</div>
+    <div class="today">📊 <span id="today">-</span> dnes</div>
   </div>
   <div class="status">
     <span class="dot"></span>
@@ -87,17 +99,3 @@
   <script>
     async function update() {
       try {
-        const res = await fetch('/api/realtime');
-        const data = await res.json();
-        document.getElementById('count').textContent = data.activeUsers;
-        document.getElementById('time').textContent = new Date().toLocaleTimeString('cs-CZ');
-      } catch (e) {
-        document.getElementById('count').textContent = '!';
-      }
-    }
-    
-    update();
-    setInterval(update, 5000);
-  </script>
-</body>
-</html>
